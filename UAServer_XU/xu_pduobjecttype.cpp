@@ -43,12 +43,10 @@ namespace XU {
 
     /** Constructs an PDUObjectType object
     */
-    PDUObjectType::PDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, const PDU::timeval time, UaMutexRefCounted* pSharedMutex)
-        : OpcUa::BaseObjectType(nodeId, name, browseNameNameSpaceIndex, pNodeConfig, pSharedMutex)
+    PDUObjectType::PDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, const PDU::timeval time, bool write_permitted, UaMutexRefCounted* pSharedMutex)
+        : OpcUa::BaseObjectType(nodeId, name, browseNameNameSpaceIndex, pNodeConfig, pSharedMutex), m_write_permitted(write_permitted)
     {
         initialize(time);
-        if (s_write_perm_list_created == false)
-            readWritePermissionFile();
     }
 
     /**  Constructs an instance of the class PDUObjectType with all components
@@ -1033,37 +1031,6 @@ namespace XU {
         this->setStates_state_timeadj(OpcUa_False);
     }
 
-    void PDUObjectType::readWritePermissionFile()
-    {
-        std::string line;
-        std::ifstream file("C:/C++SDK_UA_OPC_gekauft/uasdkcppbundle-bin-windows-vs2015_x64-v1.8.3-628/bin/signals_write_permission.txt"); 
-        
-
-
-        if (file.is_open())
-        {
-            while (std::getline(file, line))
-            {
-                 m_pWrite_perm_list.push_back(line.c_str());
-            }
-
-            file.close();
-        }
-        else {
-            perror("Open");
-            std::cerr << "Error trying to open write permission file, check if file is available!\n";
-            exit(-1);
-        }
-        s_write_perm_list_created = true;
-    }
-
-    OpcUa_Boolean PDUObjectType::HasWritePermission(std::string kks)
-    {
-        if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), kks) != m_pWrite_perm_list.end())
-            return OpcUa_True;
-        else
-            return OpcUa_False;
-    }
 
 
 

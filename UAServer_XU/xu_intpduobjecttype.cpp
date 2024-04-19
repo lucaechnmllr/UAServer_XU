@@ -36,8 +36,9 @@ namespace XU {
         NodeManagerConfig* pNodeConfig, int value,
         int state,
         PDU::timeval time,
+        bool write_permitted,
         UaMutexRefCounted* pSharedMutex)
-        : XU::PDUObjectType(nodeId, name, browseNameNameSpaceIndex, pNodeConfig, time, pSharedMutex)
+        : XU::PDUObjectType(nodeId, name, browseNameNameSpaceIndex, pNodeConfig, time, write_permitted, pSharedMutex)
     {
         initialize(value);
         this->setStates(this, state);
@@ -532,11 +533,11 @@ namespace XU {
         int temp_state = 1; // Set state "Uninitialized"
 
         // If signal has no write permission -> fail
-        /*if (!HasWritePermission(this->nodeId().identifierString()->strContent))
+        if (!getWritePermission())
         {
             ret = OpcUa_BadNotWritable;
             return ret;
-        }*/
+        }
 
         if (setValid)
             temp_state = PDU::STATE::VALID;

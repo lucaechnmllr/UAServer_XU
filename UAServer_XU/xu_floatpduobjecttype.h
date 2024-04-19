@@ -38,7 +38,7 @@ namespace XU {
     public:
         // construction / destruction
         FloatPDUObjectType(const UaNodeId& nodeId, UaObject* pInstanceDeclarationObject, NodeManagerConfig* pNodeConfig, UaMutexRefCounted* pSharedMutex = NULL);
-        FloatPDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, float value, int state, const PDU::timeval time, UaMutexRefCounted* pSharedMutex = NULL);
+        FloatPDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, float value, int state, const PDU::timeval time, bool write_permitted, UaMutexRefCounted* pSharedMutex = NULL);
 
         FloatPDUObjectType(UaBase::Object* pBaseNode, XmlUaNodeFactoryManager* pFactory, NodeManagerConfig* pNodeConfig, UaMutexRefCounted* pSharedMutex);
 

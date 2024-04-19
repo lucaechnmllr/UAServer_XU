@@ -46,7 +46,12 @@ namespace XU {
         void run();
         //- Interface UaThread
 
+        
         static OpcUa_UInt16 getTypeNamespace();
+
+        //- Read the write Permisson file
+        //- Safe KKS of write permitted files to vector m_pWrite_perm_list
+        void readWritePermissionFile();
         
 
 
@@ -59,6 +64,7 @@ namespace XU {
         bool m_stopThread;
 
         XU::XUObjectType* xu_object_ref;
+        std::vector<std::string> m_pWrite_perm_list;
 
 
         //std::unordered_map<std::string, IntPDUObjectType*> object_list_int; //List of all "IntPDU" objects
@@ -69,6 +75,7 @@ namespace XU {
     protected:
         UaMutex             m_mutex;
         static OpcUa_UInt16 s_namespaceIndex;
+        
         
 #if SUPPORT_Event_Subscription_Server_Facet
         UaStatus recursiveRegisterEventSources(const UaNodeId& startingNode, std::set<UaNodeId>& setBrowsedNodes);

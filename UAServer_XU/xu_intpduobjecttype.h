@@ -39,7 +39,7 @@ namespace XU {
     public:
         // construction / destruction
         IntPDUObjectType(const UaNodeId& nodeId, UaObject* pInstanceDeclarationObject, NodeManagerConfig* pNodeConfig, UaMutexRefCounted* pSharedMutex = NULL);
-        IntPDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, int value, int state, PDU::timeval time, UaMutexRefCounted* pSharedMutex = NULL);
+        IntPDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, int value, int state, PDU::timeval time, bool write_permitted, UaMutexRefCounted* pSharedMutex = NULL);
         IntPDUObjectType(
             UaBase::Object* pBaseNode,
             XmlUaNodeFactoryManager* pFactory,

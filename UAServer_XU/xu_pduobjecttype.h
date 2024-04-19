@@ -56,7 +56,7 @@ namespace XU {
 
         // construction / destruction
         PDUObjectType(const UaNodeId& nodeId, UaObject* pInstanceDeclarationObject, NodeManagerConfig* pNodeConfig, UaMutexRefCounted* pSharedMutex = NULL);
-        PDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, const PDU::timeval time, UaMutexRefCounted* pSharedMutex = NULL);
+        PDUObjectType(const UaNodeId& nodeId, const UaString& name, OpcUa_UInt16 browseNameNameSpaceIndex, NodeManagerConfig* pNodeConfig, const PDU::timeval time, bool write_permitted, UaMutexRefCounted* pSharedMutex = NULL);
         PDUObjectType(
             UaBase::Object* pBaseNode,
             XmlUaNodeFactoryManager* pFactory,
@@ -72,9 +72,14 @@ namespace XU {
         void setStateBitwise(int state);
         void setStates(XU::PDUObjectType* node, int state);
         void resetStates();
+
+        /** Function to get writePermission of signal
+        *
+        *  Returns true if write permission is granted and false if not
+        *
+        */
+        bool getWritePermission() const { return this->m_write_permitted; }
         
-        void readWritePermissionFile();
-        OpcUa_Boolean HasWritePermission(std::string kks);
 
         virtual UaNodeId       typeDefinitionId() const;
 
@@ -192,7 +197,11 @@ namespace XU {
         static bool s_typeNodesCreated;
         static bool s_write_perm_list_created;
         int state_bitwise;
-        std::vector<std::string> m_pWrite_perm_list;
+
+        //- Configures write permission of signal
+        //- True if write permitted and false if not
+        bool m_write_permitted;
+        
         
     };
 

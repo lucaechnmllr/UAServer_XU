@@ -20,6 +20,7 @@
 #include <memory>
 #include <stdexcept>
 #include "shutdown.h"
+#include <algorithm>
 
 // Namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/
 namespace XU {
@@ -90,6 +91,8 @@ namespace XU {
 
 		xu_object_ref = pObject;
 
+		readWritePermissionFile();
+
 		start();
 
 		return ret;
@@ -149,6 +152,29 @@ namespace XU {
 		UaStatus ret;
 
 		return ret;
+	}
+
+	void NodeManagerXUNamespace::readWritePermissionFile()
+	{
+		std::string line;
+		std::ifstream file("C:/C++SDK_UA_OPC_gekauft/uasdkcppbundle-bin-windows-vs2015_x64-v1.8.3-628/bin/signals_write_permission.txt");
+
+
+
+		if (file.is_open())
+		{
+			while (std::getline(file, line))
+			{
+				m_pWrite_perm_list.push_back(line.c_str());
+			}
+
+			file.close();
+		}
+		else {
+			perror("Open");
+			std::cerr << "Error trying to open write permission file, check if file is available!\n";
+			exit(-1);
+		}
 	}
 
 
@@ -254,6 +280,13 @@ namespace XU {
 								this); // Interface for adding nodes
 							addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
 						}
+
+						bool temp_write_permission = false;
+						if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
+						{
+							temp_write_permission = true;
+						}
+
 						//-------------------- Create new FloatPDU Object -----------------------------------
 						XU::FloatPDUObjectType* pObjectFloat = new XU::FloatPDUObjectType(
 							UaNodeId(temppdu->getKKS().c_str(), namespaceindex),
@@ -262,7 +295,8 @@ namespace XU {
 							this,
 							temppdu->getFloat(),
 							temppdu->getState(),
-							temppdu->getTime());
+							temppdu->getTime(),
+							temp_write_permission);
 
 						addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectFloat, OpcUaId_HasComponent); //Add to folder
 
@@ -273,9 +307,10 @@ namespace XU {
 						XU::FloatPDUObjectType* pObjectFloat = (XU::FloatPDUObjectType*)this->findNode(UaNodeId(temppdu->getKKS().c_str(), namespaceindex));
 						if (pObjectFloat == NULL)
 						{
-							// Error if nullptr
-							std::cerr << "TESTERRROR" << std::endl;
-							break;
+							// Exit if nullptr
+							perror("findNode()");
+							std::cerr << "findNode() returned nullptr" << '\n';
+							exit(-1);
 						}
 						if (pObjectFloat->getFloat() != temppdu->getFloat())
 						{
@@ -314,6 +349,13 @@ namespace XU {
 								this); // Interface for adding nodes
 							addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
 						}
+
+						bool temp_write_permission = false;
+						if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
+						{
+							temp_write_permission = true;
+						}
+
 						//-------------------- Create new IntPDU Object -------------------------------------
 						XU::IntPDUObjectType* pObjectInt = new XU::IntPDUObjectType(
 							UaNodeId(temppdu->getKKS().c_str(), namespaceindex),
@@ -322,7 +364,8 @@ namespace XU {
 							this,
 							temppdu->getInt(),
 							temppdu->getState(),
-							temppdu->getTime());
+							temppdu->getTime(),
+							temp_write_permission);
 
 						addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectInt, OpcUaId_HasComponent); //Add to folder
 
@@ -333,9 +376,10 @@ namespace XU {
 						XU::IntPDUObjectType* pObjectInt = (XU::IntPDUObjectType*)this->findNode(UaNodeId(temppdu->getKKS().c_str(), namespaceindex));
 						if ((pObjectInt == NULL))
 						{
-							// Error if nullptr
-							std::cerr << "TESTERRROR" << std::endl;
-							break;
+							// Exit if nullptr
+							perror("findNode()");
+							std::cerr << "findNode() returned nullptr" << '\n';
+							exit(-1);
 						}
 						if (pObjectInt->getInt() != temppdu->getInt())
 						{

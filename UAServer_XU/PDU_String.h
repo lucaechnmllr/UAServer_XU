@@ -75,8 +75,12 @@ namespace PDU {
 		sstr << node.getStateBitwise() << separator;	// State
 		sstr << '0' << separator;	// Origin = 0
 		sstr << '0' << separator;	// Index = 0
-		sstr << node.nodeId().identifierString()->strContent;	// KKS
 
+#if _DEBUG
+		sstr << node.nodeId().identifierString()->strContent;	// KKS
+#else
+		sstr << (UaString)node.nodeId().identifierString();	// KKS  geht nicht??
+#endif
 
 		return sstr.str();
 	}
