@@ -12,11 +12,15 @@
 #pragma warning(pop)
 
 #include "PDU.h"
+#include <fstream>
+#include <iostream>
+#include <algorithm>
 
 // Namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/
 namespace XU {
 
     bool PDUObjectType::s_typeNodesCreated = false;
+    bool PDUObjectType::s_write_perm_list_created = false;
     OpcUa::FolderType* PDUObjectType::s_pStates = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pTimestamp = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pStates_state_doubt = NULL;
@@ -43,6 +47,8 @@ namespace XU {
         : OpcUa::BaseObjectType(nodeId, name, browseNameNameSpaceIndex, pNodeConfig, pSharedMutex)
     {
         initialize(time);
+        if (s_write_perm_list_created == false)
+            readWritePermissionFile();
     }
 
     /**  Constructs an instance of the class PDUObjectType with all components
@@ -52,7 +58,7 @@ namespace XU {
         XmlUaNodeFactoryManager* pFactory, //!< [in] The factory to create the children
         NodeManagerConfig* pNodeConfig,  //!< [in] Interface pointer to the NodeManagerConfig interface used to add and delete node and references in the address space
         UaMutexRefCounted* pSharedMutex) //!< [in] Shared mutex object used to synchronize access to the variable. Can be NULL if no shared mutex is provided
-        : OpcUa::BaseObjectType(pBaseNode, pFactory, pNodeConfig, pSharedMutex)
+        : OpcUa::BaseObjectType(pBaseNode, pFactory, pNodeConfig, pSharedMutex), state_bitwise(PDU::STATE::UNINIT) 
     {
         UaStatus      addStatus;
 
@@ -1026,6 +1032,40 @@ namespace XU {
         this->setStates_state_service(OpcUa_False);
         this->setStates_state_timeadj(OpcUa_False);
     }
+
+    void PDUObjectType::readWritePermissionFile()
+    {
+        std::string line;
+        std::ifstream file("C:/C++SDK_UA_OPC_gekauft/uasdkcppbundle-bin-windows-vs2015_x64-v1.8.3-628/bin/signals_write_permission.txt"); 
+        
+
+
+        if (file.is_open())
+        {
+            while (std::getline(file, line))
+            {
+                 m_pWrite_perm_list.push_back(line.c_str());
+            }
+
+            file.close();
+        }
+        else {
+            perror("Open");
+            std::cerr << "Error trying to open write permission file, check if file is available!\n";
+            exit(-1);
+        }
+        s_write_perm_list_created = true;
+    }
+
+    OpcUa_Boolean PDUObjectType::HasWritePermission(std::string kks)
+    {
+        if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), kks) != m_pWrite_perm_list.end())
+            return OpcUa_True;
+        else
+            return OpcUa_False;
+    }
+
+
 
 
 } // End namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/

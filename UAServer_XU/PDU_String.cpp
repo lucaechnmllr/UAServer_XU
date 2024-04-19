@@ -23,7 +23,8 @@ PDU::basePDU *PDU::StringtoPDU(const std::string &string, char separator) {
 	// ------------------ check length -----------------------------------------
 	// -------------------------------------------------------------------------
 	if (string.size() < 15) {
-		throw std::length_error("The input string is too short to contain "
+		std::cerr << string << ":" << '\n';
+		throw std::length_error("The in put string is too short to contain "
 			"all information of a PDU.");
 	}
 
@@ -205,7 +206,6 @@ PDU::basePDU *PDU::StringtoPDU(const std::string &string, char separator) {
 		temp_state |= TIMADJ;
 #else
 		timeval *tp = &temp_time;
-		struct timezone* tzp = NULL;
 
 		SYSTEMTIME  system_time;
 		FILETIME    file_time;

@@ -72,6 +72,9 @@ namespace XU {
         void setStateBitwise(int state);
         void setStates(XU::PDUObjectType* node, int state);
         void resetStates();
+        
+        void readWritePermissionFile();
+        OpcUa_Boolean HasWritePermission(std::string kks);
 
         virtual UaNodeId       typeDefinitionId() const;
 
@@ -187,8 +190,10 @@ namespace XU {
 
     private:
         static bool s_typeNodesCreated;
+        static bool s_write_perm_list_created;
         int state_bitwise;
         std::vector<std::string> m_pWrite_perm_list;
+        
     };
 
 } // End namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/

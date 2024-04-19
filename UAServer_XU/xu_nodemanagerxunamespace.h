@@ -15,6 +15,8 @@
 #include "xu_intpduobjecttype.h"
 #include "opcua_foldertype.h"
 #include <unordered_map>
+#include <vector>
+#include <string>
 
 
 /** Namespace for the UA information model http://yourorganisation.org/UAServer/
@@ -31,7 +33,7 @@ namespace XU {
         NodeManagerXUNamespace();
     public:
         /* construction / destruction */
-        NodeManagerXUNamespace(OpcUa_Boolean firesEvents, OpcUa_Int32 nHashTableSize = 10007);
+        NodeManagerXUNamespace(OpcUa_Boolean firesEvents, OpcUa_Int32 nHashTableSize = 1000003);
         virtual ~NodeManagerXUNamespace() {};
 
         //- Interface NodeManagerUaNode -------------------------------------------------------
@@ -45,6 +47,7 @@ namespace XU {
         //- Interface UaThread
 
         static OpcUa_UInt16 getTypeNamespace();
+        
 
 
     private:
@@ -57,13 +60,16 @@ namespace XU {
 
         XU::XUObjectType* xu_object_ref;
 
-        std::unordered_map<std::string, IntPDUObjectType*> object_list_int; //List of all "IntPDU" objects
-        std::unordered_map<std::string, FloatPDUObjectType*> object_list_float; //List of all "FloatPDU" objects
+
+        //std::unordered_map<std::string, IntPDUObjectType*> object_list_int; //List of all "IntPDU" objects
+        //std::unordered_map<std::string, FloatPDUObjectType*> object_list_float; //List of all "FloatPDU" objects
+        //std::unordered_map<std::string, OpcUa::FolderType*> folder_list; //List of all Folders
 
 
     protected:
         UaMutex             m_mutex;
         static OpcUa_UInt16 s_namespaceIndex;
+        
 #if SUPPORT_Event_Subscription_Server_Facet
         UaStatus recursiveRegisterEventSources(const UaNodeId& startingNode, std::set<UaNodeId>& setBrowsedNodes);
 #endif // SUPPORT_Event_Subscription_Server_Facet

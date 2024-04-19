@@ -66,7 +66,6 @@ namespace PDU {
 			sstr << value << separator;
 			break;
 		default:
-			std::ostringstream sstr;
 			sstr << "Node does not have a type. (" << node.getType() << ')';
 			throw std::runtime_error(sstr.str());
 			break;

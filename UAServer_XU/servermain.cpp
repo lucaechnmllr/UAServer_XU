@@ -82,6 +82,7 @@ int OpcServerMain(const char* szAppPath)
         pServer->addNodeManager(pNM);
 
 
+
         // Start server object
         ret = pServer->start();
         if ( ret != 0 )

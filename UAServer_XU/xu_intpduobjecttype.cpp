@@ -119,7 +119,7 @@ namespace XU {
         addStatus = m_pNodeConfig->addNodeAndReference(this, m_pValue, OpcUaId_HasComponent);
         // Set init value
         UaVariant val;
-        val.setInt16(init_value);
+        val.setInt16((OpcUa_Int16)init_value);
         UaDataValue dataValue;
         dataValue.setValue(val, OpcUa_True, OpcUa_True);
         m_pValue->setValue(NULL, dataValue, OpcUa_False);
@@ -529,8 +529,14 @@ namespace XU {
         OpcUa_Boolean setSimulat)
     {
         UaStatus ret;
-        OpcUa_Boolean write = OpcUa_False;
         int temp_state = 1; // Set state "Uninitialized"
+
+        // If signal has no write permission -> fail
+        /*if (!HasWritePermission(this->nodeId().identifierString()->strContent))
+        {
+            ret = OpcUa_BadNotWritable;
+            return ret;
+        }*/
 
         if (setValid)
             temp_state = PDU::STATE::VALID;
@@ -555,13 +561,12 @@ namespace XU {
         if (newVal >= 0)
         {
             //this->setValue(newVal);
-            write = OpcUa_True;
         }
         //! Return Error Code -> Value out of Range
         else
         {
             ret = OpcUa_BadEdited_OutOfRange;
-            write = OpcUa_False;
+            return ret;
         }
 
         //! Check if State is possible
@@ -570,12 +575,11 @@ namespace XU {
             if (setInvalid)
             {
                 ret = OpcUa_BadInvalidState;
-                write = OpcUa_False;
+                return ret;
             }
             else
             {
                 this->setStateBitwise(temp_state);
-                write = OpcUa_True;
             }
         }
         else
@@ -583,20 +587,19 @@ namespace XU {
             if (setInvalid)
             {
                 this->setStateBitwise(temp_state);
-                write = OpcUa_True;
             }
             else
             {
                 ret = OpcUa_BadInvalidState;
-                write = OpcUa_False;
+                return ret;
             }
         }
 
-        if (write)
-        {
-            this->setValue(newVal);
-            std::cout << PDU::PDUObjecttoString<OpcUa_Double>(*this, newVal) << '\n';
-        }
+
+
+        //this->setValue(newVal);
+        std::cout << PDU::PDUObjecttoString<OpcUa_Double>(*this, newVal) << '\n';
+
 
 
         return ret;
