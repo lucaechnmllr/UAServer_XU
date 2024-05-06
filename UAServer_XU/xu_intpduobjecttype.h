@@ -3,7 +3,7 @@
 #ifndef __XU_IntPDUObjectType_H__
 #define __XU_IntPDUObjectType_H__
 
-#pragma warning(push, 2)
+#pragma warning(push, 0)
 #include "basenodes.h"
 #include "opcua_dataitemtype.h"
 #include "uaargument.h"
@@ -72,7 +72,7 @@ namespace XU {
             UaDiagnosticInfos& inputArgumentDiag);
         //- Interface MethodManager -----------------------------------------------------------
 
-        UaStatus writeValue(
+        UaStatus writeSignal(
             const ServiceContext& serviceContext,
             OpcUa_Int16 newVal,
             OpcUa_Boolean setValid,
@@ -89,8 +89,8 @@ namespace XU {
 
         virtual OpcUa::DataItemType* getValueNode();
         virtual const OpcUa::DataItemType* getValueNode() const;
-        virtual OpcUa::BaseMethod* getwriteValue();
-        virtual const OpcUa::BaseMethod* getwriteValue() const;
+        virtual OpcUa::BaseMethod* getwriteSignal();
+        virtual const OpcUa::BaseMethod* getwriteSignal() const;
 
         // NodeAccessInfo management
         void useAccessInfoFromInstance(IntPDUObjectType* pInstance);
@@ -104,8 +104,8 @@ namespace XU {
 
 
         // Method nodes
-        static OpcUa::BaseMethod* s_pwriteValueMethod;
-        OpcUa::BaseMethod* m_pwriteValueMethod;
+        static OpcUa::BaseMethod* s_pwriteSignalMethod;
+        OpcUa::BaseMethod* m_pwriteSignalMethod;
 
 
     private:

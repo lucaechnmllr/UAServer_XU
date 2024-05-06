@@ -2,7 +2,7 @@
 #ifndef MAIN_OPCSERVER_H
 #define MAIN_OPCSERVER_H
 
-#pragma warning(push, 2)
+#pragma warning(push, 0)
 #include "uaserverapplication.h"
 #pragma warning(pop)
 

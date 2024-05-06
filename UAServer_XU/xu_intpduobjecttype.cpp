@@ -1,10 +1,5 @@
 
-
-#include "xu_intpduobjecttype.h"
-#include "xu_nodemanagerxunamespace.h"
-#include <iostream>
-
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include "uagenericnodes.h"
 #include "nodemanagerroot.h"
 #include "methodhandleuanode.h"
@@ -12,11 +7,16 @@
 #include "opcua_extensionobject.h"
 #pragma warning(pop)
 
+#include "xu_intpduobjecttype.h"
+#include "xu_nodemanagerxunamespace.h"
+
+#include <iostream>
+
 // Namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/
 namespace XU {
 
     bool IntPDUObjectType::s_typeNodesCreated = false;
-    OpcUa::BaseMethod* IntPDUObjectType::s_pwriteValueMethod = NULL;
+    OpcUa::BaseMethod* IntPDUObjectType::s_pwriteSignalMethod = NULL;
     OpcUa::DataItemType* IntPDUObjectType::s_pValue = NULL;
 
     /** Constructs an IntPDUObjectType object using an instance declaration node as base
@@ -61,7 +61,7 @@ namespace XU {
         }
 
         m_pValue = NULL;
-        m_pwriteValueMethod = NULL;
+        m_pwriteSignalMethod = NULL;
 
         std::list<UaBase::BaseNode*> lstReferencedNodes = pBaseNode->hierarchicallyReferencedNodes();
         for (std::list<UaBase::BaseNode*>::const_iterator it = lstReferencedNodes.begin(); it != lstReferencedNodes.end(); it++)
@@ -80,22 +80,22 @@ namespace XU {
                     }
                 }
             }
-            else if (s_pwriteValueMethod && pChild->browseName() == s_pwriteValueMethod->browseName())
+            else if (s_pwriteSignalMethod && pChild->browseName() == s_pwriteSignalMethod->browseName())
             {
-                if (!m_pwriteValueMethod)
+                if (!m_pwriteSignalMethod)
                 {
-                    m_pwriteValueMethod = (OpcUa::BaseMethod*)pFactory->createMethod((UaBase::Method*)pChild, pNodeConfig, pSharedMutex);
-                    addStatus = pNodeConfig->addNodeAndReference(this, m_pwriteValueMethod, OpcUaId_HasComponent);
+                    m_pwriteSignalMethod = (OpcUa::BaseMethod*)pFactory->createMethod((UaBase::Method*)pChild, pNodeConfig, pSharedMutex);
+                    addStatus = pNodeConfig->addNodeAndReference(this, m_pwriteSignalMethod, OpcUaId_HasComponent);
                     UA_ASSERT(addStatus.isGood());
                     if (!((UaBase::Method*)pChild)->modellingRuleId().isNull())
                     {
-                        m_pwriteValueMethod->setModellingRuleId(((UaBase::Method*)pChild)->modellingRuleId());
+                        m_pwriteSignalMethod->setModellingRuleId(((UaBase::Method*)pChild)->modellingRuleId());
                     }
                 }
             }
         }
         UA_ASSERT(m_pValue);
-        UA_ASSERT(m_pwriteValueMethod);
+        UA_ASSERT(m_pwriteSignalMethod);
     }
 
     /** Initialize the object with all member nodes
@@ -114,7 +114,7 @@ namespace XU {
         }
 
         m_pValue = NULL;
-        m_pwriteValueMethod = NULL;
+        m_pwriteSignalMethod = NULL;
         // Mandatory variable Value
         m_pValue = new OpcUa::DataItemType(this, s_pValue, m_pNodeConfig, m_pSharedMutex);
         addStatus = m_pNodeConfig->addNodeAndReference(this, m_pValue, OpcUaId_HasComponent);
@@ -127,15 +127,15 @@ namespace XU {
         UA_ASSERT(addStatus.isGood());
 
 
-        // Method writeValue
-        m_pwriteValueMethod = new OpcUa::BaseMethod(this, s_pwriteValueMethod, m_pSharedMutex);
-        addStatus = m_pNodeConfig->addNodeAndReference(this, m_pwriteValueMethod, OpcUaId_HasComponent);
+        // Method writeSignal
+        m_pwriteSignalMethod = new OpcUa::BaseMethod(this, s_pwriteSignalMethod, m_pSharedMutex);
+        addStatus = m_pNodeConfig->addNodeAndReference(this, m_pwriteSignalMethod, OpcUaId_HasComponent);
         UA_ASSERT(addStatus.isGood());
         // ------------------------------------------------------------------------
         // Add InputArguments
         // Create property
         pPropertyArg = new UaPropertyMethodArgument(
-            UaNodeId(UaString("%1.writeValue.InputArguments").arg(nodeId().toString()), nsIdx), // NodeId of the property
+            UaNodeId(UaString("%1.writeSignal.InputArguments").arg(nodeId().toString()), nsIdx), // NodeId of the property
             Ua_AccessLevel_CurrentRead,             // Access level of the property
             9,                                      // Number of arguments
             UaPropertyMethodArgument::INARGUMENTS); // IN arguments
@@ -212,7 +212,7 @@ namespace XU {
             arrayDimensions,
             UaLocalizedText("en", "Simulated")); // Description
         // Add property to method
-        addStatus = m_pNodeConfig->addNodeAndReference(m_pwriteValueMethod, pPropertyArg, OpcUaId_HasProperty);
+        addStatus = m_pNodeConfig->addNodeAndReference(m_pwriteSignalMethod, pPropertyArg, OpcUaId_HasProperty);
         UA_ASSERT(addStatus.isGood());
 
     }
@@ -254,17 +254,17 @@ namespace XU {
             addStatus = pTypeNodeConfig->addNodeAndReference(UaNodeId(XUId_PDUObjectType, nsSuperTypeIdx), pObjectType, OpcUaId_HasSubtype);
             UA_ASSERT(addStatus.isGood());
             // ------------------------------------------------------------------------
-            // Method writeValue
+            // Method writeSignal
             // ------------------------------------------------------------------------
-            s_pwriteValueMethod = new OpcUa::BaseMethod(UaNodeId(XUId_IntPDUObjectType_writeValue, nsTypeIdx), "writeValue", XU::NodeManagerXUNamespace::getTypeNamespace());
-            s_pwriteValueMethod->setModellingRuleId(OpcUaId_ModellingRule_Mandatory);
-            addStatus = pTypeNodeConfig->addNodeAndReference(pObjectType, s_pwriteValueMethod, OpcUaId_HasComponent);
+            s_pwriteSignalMethod = new OpcUa::BaseMethod(UaNodeId(XUId_IntPDUObjectType_writeSignal, nsTypeIdx), "writeSignal", XU::NodeManagerXUNamespace::getTypeNamespace());
+            s_pwriteSignalMethod->setModellingRuleId(OpcUaId_ModellingRule_Mandatory);
+            addStatus = pTypeNodeConfig->addNodeAndReference(pObjectType, s_pwriteSignalMethod, OpcUaId_HasComponent);
             UA_ASSERT(addStatus.isGood());
             // ------------------------------------------------------------------------
             // Add InputArguments
             // Create property
             pPropertyArg = new UaPropertyMethodArgument(
-                UaNodeId(XUId_IntPDUObjectType_writeValue_InputArguments, nsTypeIdx),       // NodeId of the property
+                UaNodeId(XUId_IntPDUObjectType_writeSignal_InputArguments, nsTypeIdx),       // NodeId of the property
                 Ua_AccessLevel_CurrentRead,             // Access level of the property
                 9,                                      // Number of arguments
                 UaPropertyMethodArgument::INARGUMENTS); // IN arguments
@@ -343,7 +343,7 @@ namespace XU {
             // Set the ModellingRule to InputArguments
             pPropertyArg->setModellingRuleId(OpcUaId_ModellingRule_Mandatory);
             // Add property to method
-            pTypeNodeConfig->addNodeAndReference(s_pwriteValueMethod, pPropertyArg, OpcUaId_HasProperty);
+            pTypeNodeConfig->addNodeAndReference(s_pwriteSignalMethod, pPropertyArg, OpcUaId_HasProperty);
 
 
             // Mandatory variable Value
@@ -365,7 +365,7 @@ namespace XU {
         s_typeNodesCreated = false;
 
         s_pValue = NULL;
-        s_pwriteValueMethod = NULL;
+        s_pwriteSignalMethod = NULL;
     }
 
     /** Returns the type definition NodeId for the IntPDUObjectType
@@ -418,8 +418,8 @@ namespace XU {
 
             if (pMethod)
             {
-                if (((m_pwriteValueMethod != NULL) && (pMethod->nodeId() == m_pwriteValueMethod->nodeId()))
-                    || ((s_pwriteValueMethod != NULL) && (pMethod->nodeId() == s_pwriteValueMethod->nodeId())))
+                if (((m_pwriteSignalMethod != NULL) && (pMethod->nodeId() == m_pwriteSignalMethod->nodeId()))
+                    || ((s_pwriteSignalMethod != NULL) && (pMethod->nodeId() == s_pwriteSignalMethod->nodeId())))
                 {
                     if (inputArguments.length() < 9)
                     {
@@ -492,7 +492,7 @@ namespace XU {
 
                         if (ret.isGood())
                         {
-                            ret = this->writeValue(serviceContext, newVal, setValid, setInvalid, setDoubt, setHwFail, setRepval, setService, setTimeAdj, setSimulat);
+                            ret = this->writeSignal(serviceContext, newVal, setValid, setInvalid, setDoubt, setHwFail, setRepval, setService, setTimeAdj, setSimulat);
                         }
                     }
 
@@ -517,8 +517,8 @@ namespace XU {
         return ret;
     }
 
-    UaStatus IntPDUObjectType::writeValue(
-        const ServiceContext& serviceContext,
+    UaStatus IntPDUObjectType::writeSignal(
+        const ServiceContext&,
         OpcUa_Int16 newVal,
         OpcUa_Boolean setValid,
         OpcUa_Boolean setInvalid,
@@ -599,8 +599,7 @@ namespace XU {
 
 
         //this->setValue(newVal);
-        std::cout << PDU::PDUObjecttoString<OpcUa_Double>(*this, newVal) << '\n';
-
+        std::cout << PDU::PDUObjecttoString<OpcUa_Int16>(*this, newVal) << '\n';
 
 
         return ret;
@@ -649,18 +648,18 @@ namespace XU {
         return m_pValue;
     }
 
-    /** Returns the writeValue node.
+    /** Returns the writeSignal node.
       */
-    OpcUa::BaseMethod* IntPDUObjectType::getwriteValue()
+    OpcUa::BaseMethod* IntPDUObjectType::getwriteSignal()
     {
-        return m_pwriteValueMethod;
+        return m_pwriteSignalMethod;
     }
 
-    /** Returns the writeValue node.
+    /** Returns the writeSignal node.
       */
-    const OpcUa::BaseMethod* IntPDUObjectType::getwriteValue() const
+    const OpcUa::BaseMethod* IntPDUObjectType::getwriteSignal() const
     {
-        return m_pwriteValueMethod;
+        return m_pwriteSignalMethod;
     }
 
     /** Uses the NodeAccessInfo of pOther and its children. */
@@ -670,7 +669,7 @@ namespace XU {
 
         // children
         m_pValue->useAccessInfoFromInstance(pOther->m_pValue);
-        m_pwriteValueMethod->useAccessInfoFrom(pOther->m_pwriteValueMethod);
+        m_pwriteSignalMethod->useAccessInfoFrom(pOther->m_pwriteSignalMethod);
     }
 
     /** Set the NodeAccessInfo for this node and all of its children. */
@@ -680,7 +679,7 @@ namespace XU {
 
         // children
         m_pValue->setAccessInfoWithChildren(pNodeAccessInfo);
-        m_pwriteValueMethod->setAccessInfoWithChildren(pNodeAccessInfo);
+        m_pwriteSignalMethod->setAccessInfoWithChildren(pNodeAccessInfo);
     }
 
 

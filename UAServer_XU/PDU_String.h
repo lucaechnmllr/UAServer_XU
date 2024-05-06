@@ -76,11 +76,10 @@ namespace PDU {
 		sstr << '0' << separator;	// Origin = 0
 		sstr << '0' << separator;	// Index = 0
 
-#if _DEBUG
+
 		sstr << node.nodeId().identifierString()->strContent;	// KKS
-#else
-		sstr << (UaString)node.nodeId().identifierString();	// KKS  geht nicht??
-#endif
+
+		sstr << '\n' << '!';
 
 		return sstr.str();
 	}

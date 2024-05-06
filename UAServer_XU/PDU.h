@@ -4,15 +4,16 @@
 #define BASEPDU_H_
 #define PDU_HEADER_VERSION 11ul
 
-#include <stdexcept>
-#include <string>
+#pragma warning(push,0)
 #ifdef POSIX
 #include <sys/time.h>
 #else
-#pragma warning(push,2)
 #include <WinSock2.h>
 #endif
 #pragma warning(pop)
+
+#include <stdexcept>
+#include <string>
 
 
 namespace PDU {

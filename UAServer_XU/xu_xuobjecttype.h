@@ -3,14 +3,14 @@
 #ifndef __XU_XUObjectType_H__
 #define __XU_XUObjectType_H__
 
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include "opcua_baseobjecttype.h"
 #include "basenodes.h"
 #include "opcua_dataitemtype.h"
 #pragma warning(pop)
 
-
 #include "xu_identifiers.h"
+
 
 // Namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/
 namespace XU {

@@ -1,15 +1,15 @@
 
-
-#include "xu_pduobjecttype.h"
-#include "xu_nodemanagerxunamespace.h"
-
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include "uagenericnodes.h"
 #include "nodemanagerroot.h"
 #include "methodhandleuanode.h"
 #include "instancefactory.h"
 #include "opcua_extensionobject.h"
 #pragma warning(pop)
+
+
+#include "xu_pduobjecttype.h"
+#include "xu_nodemanagerxunamespace.h"
 
 #include "PDU.h"
 #include <fstream>
@@ -56,7 +56,7 @@ namespace XU {
         XmlUaNodeFactoryManager* pFactory, //!< [in] The factory to create the children
         NodeManagerConfig* pNodeConfig,  //!< [in] Interface pointer to the NodeManagerConfig interface used to add and delete node and references in the address space
         UaMutexRefCounted* pSharedMutex) //!< [in] Shared mutex object used to synchronize access to the variable. Can be NULL if no shared mutex is provided
-        : OpcUa::BaseObjectType(pBaseNode, pFactory, pNodeConfig, pSharedMutex), state_bitwise(PDU::STATE::UNINIT) 
+        : OpcUa::BaseObjectType(pBaseNode, pFactory, pNodeConfig, pSharedMutex), state_bitwise(PDU::STATE::UNINIT) , m_write_permitted(false)
     {
         UaStatus      addStatus;
 
@@ -348,7 +348,7 @@ namespace XU {
         m_pTimestamp = new OpcUa::PropertyType(this, s_pTimestamp, m_pNodeConfig, m_pSharedMutex);
         addStatus = m_pNodeConfig->addNodeAndReference(this, m_pTimestamp, OpcUaId_HasProperty);
         UaVariant val;
-        val.setDateTime(UaDateTime::fromTime_t(static_cast<time_t>(time.tv_sec) + time.tv_usec));
+        val.setDateTime(UaDateTime::fromTime_t(static_cast<time_t>(time.tv_sec)));
         UaDataValue dataValue;
         dataValue.setValue(val, OpcUa_True, OpcUa_True);
         m_pTimestamp->setValue(NULL, dataValue, OpcUa_False);
@@ -1030,7 +1030,6 @@ namespace XU {
         this->setStates_state_service(OpcUa_False);
         this->setStates_state_timeadj(OpcUa_False);
     }
-
 
 
 

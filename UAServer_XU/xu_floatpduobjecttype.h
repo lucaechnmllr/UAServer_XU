@@ -1,7 +1,7 @@
 #ifndef __XU_FLOATPDUOBJECTTYPE_H__
 #define __XU_FLOATPDUOBJECTTYPE_H__
 
-#pragma warning(push, 2)
+#pragma warning(push, 0)
 #include "basenodes.h"
 #include "opcua_basedatavariabletype.h"
 #include "uaargument.h"
@@ -68,7 +68,7 @@ namespace XU {
             UaDiagnosticInfos& inputArgumentDiag);
         //- Interface MethodManager -----------------------------------------------------------
 
-        UaStatus writeValue(
+        UaStatus writeSignal(
             const ServiceContext& serviceContext,
             OpcUa_Double newVal,
             OpcUa_Boolean setValid,
@@ -85,8 +85,8 @@ namespace XU {
 
         virtual OpcUa::BaseDataVariableType* getValueNode();
         virtual const OpcUa::BaseDataVariableType* getValueNode() const;
-        virtual OpcUa::BaseMethod* getwriteValue();
-        virtual const OpcUa::BaseMethod* getwriteValue() const;
+        virtual OpcUa::BaseMethod* getwriteSignal();
+        virtual const OpcUa::BaseMethod* getwriteSignal() const;
 
         // NodeAccessInfo management
         void useAccessInfoFromInstance(FloatPDUObjectType* pInstance);
@@ -101,8 +101,8 @@ namespace XU {
 
 
         // Method nodes
-        static OpcUa::BaseMethod* s_pwriteValueMethod;
-        OpcUa::BaseMethod* m_pwriteValueMethod;
+        static OpcUa::BaseMethod* s_pwriteSignalMethod;
+        OpcUa::BaseMethod* m_pwriteSignalMethod;
 
 
     private:

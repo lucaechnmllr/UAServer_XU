@@ -2,18 +2,18 @@
 #ifndef _XU_NodeManagerXUNamespace_H__
 #define _XU_NodeManagerXUNamespace_H__
 
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include "uamutex.h"
 #include "uabasenodes.h"
 #include "nodemanagerbase.h"
 #include "uaobjecttypes.h"
+#include "opcua_foldertype.h"
 #pragma warning(pop)
 
 #include "xu_identifiers.h"
 #include "xu_xuobjecttype.h"
 #include "xu_floatpduobjecttype.h"
 #include "xu_intpduobjecttype.h"
-#include "opcua_foldertype.h"
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -33,7 +33,7 @@ namespace XU {
         NodeManagerXUNamespace();
     public:
         /* construction / destruction */
-        NodeManagerXUNamespace(OpcUa_Boolean firesEvents, OpcUa_Int32 nHashTableSize = 1000003);
+        NodeManagerXUNamespace(OpcUa_Boolean firesEvents, OpcUa_Int32 nHashTableSize = 10000019);
         virtual ~NodeManagerXUNamespace() {};
 
         //- Interface NodeManagerUaNode -------------------------------------------------------

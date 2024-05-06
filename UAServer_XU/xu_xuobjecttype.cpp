@@ -1,6 +1,6 @@
 
 
-#pragma warning(push, 2)
+#pragma warning(push, 0)
 #include "uagenericnodes.h"
 #include "nodemanagerroot.h"
 #include "methodhandleuanode.h"

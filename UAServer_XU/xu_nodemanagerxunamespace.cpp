@@ -1,16 +1,16 @@
-#include "xu_nodemanagerxunamespace.h"
-//#include "xu_browsenames.h"
-#include "xu_floatpduobjecttype.h"
-#include "xu_intpduobjecttype.h"
-#include "xu_pduobjecttype.h"
-#include "xu_xuobjecttype.h"
-
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include <uabasenodes.h>
 #include "instancefactory.h"
 #include "nodemanagerroot.h"
 #include "opcua_foldertype.h"
 #pragma warning(pop)
+
+#include "xu_nodemanagerxunamespace.h"
+#include "xu_floatpduobjecttype.h"
+#include "xu_intpduobjecttype.h"
+#include "xu_pduobjecttype.h"
+#include "xu_xuobjecttype.h"
+#include "shutdown.h"
 
 #include "PDU.h"
 #include "PDU_String.h"
@@ -19,8 +19,9 @@
 #include <iostream>
 #include <memory>
 #include <stdexcept>
-#include "shutdown.h"
 #include <algorithm>
+
+constexpr auto TIMEZONE_MESZ = 2*60*60;
 
 // Namespace for the UA information model http://yourorganisation.org/XU_Test_ServerConfig/
 namespace XU {
@@ -226,6 +227,8 @@ namespace XU {
 	}
 #endif // SUPPORT_Event_Subscription_Server_Facet
 
+
+
 	void NodeManagerXUNamespace::run()
 	{
 		using std::string;
@@ -233,8 +236,10 @@ namespace XU {
 		typedef std::shared_ptr<PDU::basePDU> pdu_ptr_t;
 
 		string line;
+		UaStatus addResult;
 
-		static OpcUa_Int32 signal_count = 0;
+		static OpcUa_UInt64 signal_count = 0;
+		UaDateTime datetime = 0;
 		OpcUa_UInt16 namespaceindex = this->getNameSpaceIndex();
 
 
@@ -242,6 +247,11 @@ namespace XU {
 		{
 			std::getline(std::cin, line); // Wait for input stream
 			try {
+				// XUtoSTDOUT prints empty strings -> if _STDOUT_DUMMY_TIME exceeds 
+				// Catch this "empty" transfer
+				if (line.empty())
+					continue;
+
 				auto temppdu = pdu_ptr_t(PDU::StringtoPDU(line, ':')); // Create shared pointer
 
 				std::stringstream sstr;
@@ -268,7 +278,11 @@ namespace XU {
 								folder_system.c_str(), // Name
 								namespaceindex, // Name space index
 								this); // Interface for adding nodes
-							addNodeAndReference(xu_object_ref, pFolderSystem, OpcUaId_HasComponent);
+							addResult = addNodeAndReference(xu_object_ref, pFolderSystem, OpcUaId_HasComponent);
+							if (addResult.isNotGood())
+							{   // Release reference if adding node to NodeManager failed
+								pFolderSystem->releaseReference();
+							}
 						}
 						if (!this->findNode(UaNodeId(folder_signaltype.c_str(), namespaceindex)))
 						{
@@ -278,7 +292,11 @@ namespace XU {
 								temppdu->getSignalName().c_str(), // Name
 								namespaceindex, // Name space index
 								this); // Interface for adding nodes
-							addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
+							addResult = addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
+							if (addResult.isNotGood())
+							{   // Release reference if adding node to NodeManager failed
+								pFolderSignal->releaseReference();
+							}
 						}
 
 						bool temp_write_permission = false;
@@ -298,7 +316,11 @@ namespace XU {
 							temppdu->getTime(),
 							temp_write_permission);
 
-						addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectFloat, OpcUaId_HasComponent); //Add to folder
+						addResult = addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectFloat, OpcUaId_HasComponent); //Add to folder
+						if (addResult.isNotGood())
+						{   // Release reference if adding node to NodeManager failed
+							pObjectFloat->releaseReference();
+						}
 
 						signal_count++;
 					}
@@ -312,16 +334,12 @@ namespace XU {
 							std::cerr << "findNode() returned nullptr" << '\n';
 							exit(-1);
 						}
-						if (pObjectFloat->getFloat() != temppdu->getFloat())
-						{
-							pObjectFloat->setValue((OpcUa_Double)temppdu->getFloat()); //Set new value
-						}
-						//Check if state has changed
-						if (pObjectFloat->getStateBitwise() != temppdu->getState())
-						{
-							pObjectFloat->setStates(pObjectFloat, temppdu->getState()); //Set new state
-						}
-						pObjectFloat->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec) + temppdu->getTime().tv_usec)); // Set new timestamp
+
+						pObjectFloat->setValue((OpcUa_Double)temppdu->getFloat()); //Set new value
+
+						pObjectFloat->setStates(pObjectFloat, temppdu->getState()); //Set new state
+
+						pObjectFloat->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec + TIMEZONE_MESZ))); // Set new timestamp
 					}
 					break;
 				}
@@ -337,7 +355,11 @@ namespace XU {
 								folder_system.c_str(), // Name
 								namespaceindex, // Name space index
 								this); // Interface for adding nodes
-							addNodeAndReference(xu_object_ref, pFolderSystem, OpcUaId_HasComponent);
+							addResult = addNodeAndReference(xu_object_ref, pFolderSystem, OpcUaId_HasComponent);
+							if (addResult.isNotGood())
+							{   // Release reference if adding node to NodeManager failed
+								pFolderSystem->releaseReference();
+							}
 						}
 						if (!this->findNode(UaNodeId(folder_signaltype.c_str(), namespaceindex)))
 						{
@@ -347,7 +369,11 @@ namespace XU {
 								temppdu->getSignalName().c_str(), // Name
 								namespaceindex, // Name space index
 								this); // Interface for adding nodes
-							addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
+							addResult = addNodeAndReference(UaNodeId(folder_system.c_str(), namespaceindex), pFolderSignal, OpcUaId_HasComponent);
+							if (addResult.isNotGood())
+							{   // Release reference if adding node to NodeManager failed
+								pFolderSignal->releaseReference();
+							}
 						}
 
 						bool temp_write_permission = false;
@@ -367,7 +393,11 @@ namespace XU {
 							temppdu->getTime(),
 							temp_write_permission);
 
-						addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectInt, OpcUaId_HasComponent); //Add to folder
+						addResult = addNodeAndReference(UaNodeId(folder_signaltype.c_str(), namespaceindex), pObjectInt, OpcUaId_HasComponent); //Add to folder
+						if (addResult.isNotGood())
+						{   // Release reference if adding node to NodeManager failed
+							pObjectInt->releaseReference();
+						}
 
 						signal_count++;
 					}
@@ -381,19 +411,18 @@ namespace XU {
 							std::cerr << "findNode() returned nullptr" << '\n';
 							exit(-1);
 						}
-						if (pObjectInt->getInt() != temppdu->getInt())
-						{
-							pObjectInt->setValue((OpcUa_Int16)temppdu->getInt()); //Set new value
-						}
-						//Check if state has changed
-						if (pObjectInt->getStateBitwise() != temppdu->getState())
-						{
-							pObjectInt->setStates(pObjectInt, temppdu->getState()); //Set new state
-						}
-						pObjectInt->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec) + temppdu->getTime().tv_usec)); // Set new timestamp
+						
+						pObjectInt->setValue((OpcUa_Int16)temppdu->getInt()); //Set new value
+						
+						pObjectInt->setStates(pObjectInt, temppdu->getState()); //Set new state
+
+						pObjectInt->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec + TIMEZONE_MESZ))); // Set new timestamp
 					}
 					break;
 				}
+				case PDU::TYPE::NONE:
+					// exception would have been thrown earlier
+					break;
 				default:
 					throw std::runtime_error("Fehler bei Erstellung des Namespaces: Server wird gestoppt!");
 					break;

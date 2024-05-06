@@ -3,15 +3,13 @@
 #ifndef __XU_PDUObjectType_H__
 #define __XU_PDUObjectType_H__
 
-#pragma warning(push,2)
+#pragma warning(push,0)
 #include "opcua_baseobjecttype.h"
 #include "basenodes.h"
 #include "opcua_foldertype.h"
 #include "opcua_propertytype.h"
 #pragma warning(pop)
 
-#include <vector>
-#include <string>
 #include "PDU.h"
 
 

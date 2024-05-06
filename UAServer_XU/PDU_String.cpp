@@ -10,7 +10,6 @@
 PDU::basePDU *PDU::StringtoPDU(const std::string &string, char separator) {
 	basePDU *retval = NULL;
 
-
 	// ------------------ check seperator --------------------------------------
 	// -------------------------------------------------------------------------
 	if (!ispunct(separator) || separator == '.') {
