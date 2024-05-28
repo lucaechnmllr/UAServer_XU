@@ -600,6 +600,7 @@ namespace XU {
         
         //this->setValue(newVal);
         std::cout << PDU::PDUObjecttoString<OpcUa_Double>(*this, newVal) << '\n';
+        std::cerr << "Signal sent!\n";
 
         return ret;
     }

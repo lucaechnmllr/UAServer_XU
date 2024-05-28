@@ -79,7 +79,7 @@ int OpcServerMain(const char* szAppPath)
             }
 
             cerr << "***************************************************\n";
-            cerr << " Shutting down server\n";
+            cerr << " Shutting down server (cleanup)\n";
             cerr << "***************************************************\n";
 
 
@@ -91,6 +91,11 @@ int OpcServerMain(const char* szAppPath)
             // Stop the server and wait three seconds if clients are connected
             // to allow them to disconnect after they received the shutdown signal
             pServer->stop(3, UaLocalizedText("", "User shutdown"));
+
+            cerr << "***************************************************\n";
+            cerr << " Server has been successfully terminated!\n";
+            cerr << "***************************************************\n";
+
             delete pServer;
             pServer = NULL;
             //-------------------------------------------

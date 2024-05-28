@@ -20,6 +20,7 @@
 #include <memory>
 #include <stdexcept>
 #include <algorithm>
+#include <chrono>
 
 constexpr auto TIMEZONE_MESZ = 2*60*60;
 
@@ -234,6 +235,7 @@ namespace XU {
 		using std::string;
 
 		typedef std::shared_ptr<PDU::basePDU> pdu_ptr_t;
+		auto start_time = std::chrono::high_resolution_clock::now();
 
 		string line;
 		UaStatus addResult;
@@ -242,10 +244,27 @@ namespace XU {
 		UaDateTime datetime = 0;
 		OpcUa_UInt16 namespaceindex = this->getNameSpaceIndex();
 
+		// Short delay to connect the two interface programs correctly in advance. 
+		UaThread::msleep(1000);
 
 		while (m_stopThread == OpcUa_False && ShutDownFlag() == 0)
 		{
-			std::getline(std::cin, line); // Wait for input stream
+			// Error/abort handling
+			if (!std::getline(std::cin, line)) { // Get input stream
+				// if failure, check the reason
+				if (std::cin.eof()) {
+					std::cerr << "End of input reached. Connection to STDINtoXU might be closed." << std::endl;
+				}
+				else if (std::cin.fail()) {
+					std::cerr << "Input stream error. Connection to STDINtoXU might be broken." << std::endl;
+				}
+				else {
+					std::cerr << "Unknown error occurred. Connection to STDINtoXU might be broken." << std::endl;
+				}
+				break; // Schleife beenden
+			}
+			
+
 			try {
 				// XUtoSTDOUT prints empty strings -> if _STDOUT_DUMMY_TIME exceeds 
 				// Catch this "empty" transfer
@@ -340,6 +359,13 @@ namespace XU {
 						pObjectFloat->setStates(pObjectFloat, temppdu->getState()); //Set new state
 
 						pObjectFloat->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec + TIMEZONE_MESZ))); // Set new timestamp
+
+						//if (temppdu->getKKS() == "3AHP 712MP               XQ01     ")
+						//{
+							/*auto end_time = std::chrono::high_resolution_clock::now();
+							auto int_s = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+							std::cerr << int_s.count() << "us" << std::endl;*/
+						//}
 					}
 					break;
 				}
@@ -417,6 +443,13 @@ namespace XU {
 						pObjectInt->setStates(pObjectInt, temppdu->getState()); //Set new state
 
 						pObjectInt->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec + TIMEZONE_MESZ))); // Set new timestamp
+
+						//if (temppdu->getKKS() == "3AHP 712MP               XQ01     ")
+						//{
+							/*auto end_time = std::chrono::high_resolution_clock::now();
+							auto int_s = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+							std::cerr << int_s.count() << "us" << std::endl;*/
+						//}
 					}
 					break;
 				}
