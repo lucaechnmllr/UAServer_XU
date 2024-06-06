@@ -596,10 +596,10 @@ namespace XU {
             }
         }
 
-
+        //std::cerr << "ServerMode: " << NodeManagerXUNamespace::getServerMode() << std::endl;
 
         //this->setValue(newVal);
-        std::cout << PDU::PDUObjecttoString<OpcUa_Int16>(*this, newVal) << '\n';
+        std::cout << PDU::PDUObjecttoString<OpcUa_Int16>(*this, newVal, NodeManagerXUNamespace::getServerMode()) << '\n';
 
 
         return ret;

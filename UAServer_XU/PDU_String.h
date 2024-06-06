@@ -42,7 +42,7 @@ namespace PDU {
 	* application.
 	*/
 	template<typename T>
-	std::string PDUObjecttoString(const XU::PDUObjectType& node,T value, char separator = ':')
+	std::string PDUObjecttoString(const XU::PDUObjectType& node,T value, int mode, char separator = ':')
 	{
 		// time_s:time_us:type:value:state:origin:index:kks
 
@@ -79,7 +79,8 @@ namespace PDU {
 
 		sstr << node.nodeId().identifierString()->strContent;	// KKS
 
-		sstr << '\n' << '!';
+		if(mode)
+			sstr << '\n' << '!';
 
 		return sstr.str();
 	}

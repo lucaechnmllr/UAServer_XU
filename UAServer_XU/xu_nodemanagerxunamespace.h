@@ -48,6 +48,8 @@ namespace XU {
 
         
         static OpcUa_UInt16 getTypeNamespace();
+        static OpcUa_UInt16 getServerMode();
+        static void setServerMode(OpcUa_UInt16 mode);
 
         //- Read the write Permisson file
         //- Safe KKS of write permitted files to vector m_pWrite_perm_list
@@ -62,19 +64,17 @@ namespace XU {
         UaStatus addAdditionalNonHierarchicalReferences();
 
         bool m_stopThread;
+        bool m_signalimage_complete;
 
         XU::XUObjectType* xu_object_ref;
         std::vector<std::string> m_pWrite_perm_list;
 
 
-        //std::unordered_map<std::string, IntPDUObjectType*> object_list_int; //List of all "IntPDU" objects
-        //std::unordered_map<std::string, FloatPDUObjectType*> object_list_float; //List of all "FloatPDU" objects
-        //std::unordered_map<std::string, OpcUa::FolderType*> folder_list; //List of all Folders
-
 
     protected:
         UaMutex             m_mutex;
         static OpcUa_UInt16 s_namespaceIndex;
+        static OpcUa_UInt16 s_server_mode;
         
         
 #if SUPPORT_Event_Subscription_Server_Facet

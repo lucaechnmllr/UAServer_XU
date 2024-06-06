@@ -117,9 +117,33 @@ int OpcServerMain(const char* szAppPath)
 #ifdef _WIN32_WCE
 int WINAPI WinMain( HINSTANCE, HINSTANCE, LPWSTR, int)
 #else
-int main(int, char*[])
+int main(int argc, char* argv[])
 #endif
 {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <0|1>" << std::endl;
+        return 1;
+    }
+
+    // Read the argument and convert it to an integer
+    int ServerMode = std::stoi(argv[1]);
+
+    // Check the value and set the static variable
+    if (ServerMode == 0 || ServerMode == 1) {
+        XU::NodeManagerXUNamespace::setServerMode(ServerMode);
+    }
+    else {
+        std::cerr << "Invalid argument. Please use 0 or 1." << std::endl;
+        return 1;
+    }
+
+    std::cerr << "***************************************************\n";
+    if (ServerMode)
+        std::cerr << " Server will be started in RapidMode.\n Every write operation will be forced!\n";
+    else
+        std::cerr << " Server is started in normal mode.\n The internal cycle of STDINtoXU is used for write operations!\n";
+    std::cerr << "***************************************************\n";
+
     int ret = 0;
 
     RegisterSignalHandler();
