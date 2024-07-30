@@ -5,8 +5,8 @@
 
 #include "shutdown.h"
 
-#include <csignal>
-#include <stdio.h>
+#include <Windows.h>
+#include <iostream>
 #include <string.h>
 
 
@@ -15,16 +15,19 @@ static volatile unsigned int g_ShutDown = 0;
 
 
 
-void signal_handler(int signum)
+BOOL WINAPI ConsoleHandler(DWORD signal)
 {
-    if (signum == SIGINT)
+    if (signal == CTRL_BREAK_EVENT)
     {
+        std::cerr << "CTRL_BREAK_EVENT received!\n";
         g_ShutDown = 1;
     }
-    if (signum == SIGTERM)
+    if (signal == CTRL_C_EVENT)
     {
+        std::cerr << "CTRL_C_EVENT received\n";
         g_ShutDown = 1;
     }
+    return TRUE;
 }
 
 /* Return shutdown flag. */
@@ -36,11 +39,7 @@ unsigned int ShutDownFlag()
 
 void RegisterSignalHandler()
 {
-    // Install Signal Handler for SIGINT
-    signal(SIGINT, signal_handler);
-
-    // Install Signal Handler for SIGTERM
-    signal(SIGTERM, signal_handler);
+    SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 }
 
 

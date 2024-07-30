@@ -42,7 +42,7 @@ namespace PDU {
 	* application.
 	*/
 	template<typename T>
-	std::string PDUObjecttoString(const XU::PDUObjectType& node,T value, int mode, char separator = ':')
+	std::string PDUObjecttoString(const XU::PDUObjectType& node,T value, int state, char separator = ':')
 	{
 		// time_s:time_us:type:value:state:origin:index:kks
 
@@ -72,15 +72,12 @@ namespace PDU {
 		}
 
 		//! Set State, Origin, Index and KKS
-		sstr << node.getStateBitwise() << separator;	// State
+		sstr << state << separator;	// State
 		sstr << '0' << separator;	// Origin = 0
 		sstr << '0' << separator;	// Index = 0
 
 
 		sstr << node.nodeId().identifierString()->strContent;	// KKS
-
-		if(mode)
-			sstr << '\n' << '!';
 
 		return sstr.str();
 	}

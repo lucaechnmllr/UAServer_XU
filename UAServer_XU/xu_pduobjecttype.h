@@ -117,9 +117,6 @@ namespace XU {
         virtual void setStates_state_uninit(OpcUa_Boolean state_uninit);
         virtual OpcUa_Boolean getStates_state_uninit() const;
 
-        // state_valid defined at States
-        virtual void setStates_state_valid(OpcUa_Boolean state_valid);
-        virtual OpcUa_Boolean getStates_state_valid() const;
 
         virtual OpcUa::FolderType* getStates();
         virtual const OpcUa::FolderType* getStates() const;
@@ -141,8 +138,6 @@ namespace XU {
         virtual const OpcUa::PropertyType* getStates_state_timeadjNode() const;
         virtual OpcUa::PropertyType* getStates_state_uninitNode();
         virtual const OpcUa::PropertyType* getStates_state_uninitNode() const;
-        virtual OpcUa::PropertyType* getStates_state_validNode();
-        virtual const OpcUa::PropertyType* getStates_state_validNode() const;
 
         // NodeAccessInfo management
         void useAccessInfoFromInstance(PDUObjectType* pInstance);
@@ -183,9 +178,6 @@ namespace XU {
         // Variable States state_uninit
         static OpcUa::PropertyType* s_pStates_state_uninit;
         OpcUa::PropertyType* m_pStates_state_uninit;
-        // Variable States state_valid
-        static OpcUa::PropertyType* s_pStates_state_valid;
-        OpcUa::PropertyType* m_pStates_state_valid;
 
 
     private:

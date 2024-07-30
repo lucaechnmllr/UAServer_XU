@@ -68,7 +68,7 @@ int OpcServerMain(const char* szAppPath)
         if ( ret == 0 )
         {
             cerr << "***************************************************\n";
-            cerr << " Press " << SHUTDOWN_SEQUENCE << " to shutdown the server!" << endl;
+            cerr << " Press " << "CTRL_BREAK" << " or " << "CTRL_C" << " to shutdown the server!" << endl;
             cerr << "***************************************************\n";
 
             

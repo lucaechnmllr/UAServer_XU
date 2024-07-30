@@ -137,7 +137,7 @@ namespace XU {
         pPropertyArg = new UaPropertyMethodArgument(
             UaNodeId(UaString("%1.writeSignal.InputArguments").arg(nodeId().toString()), nsIdx), // NodeId of the property
             Ua_AccessLevel_CurrentRead,             // Access level of the property
-            9,                                      // Number of arguments
+            8,                                      // Number of arguments
             UaPropertyMethodArgument::INARGUMENTS); // IN arguments
         // Argument newVal
         pPropertyArg->setArgument(
@@ -146,18 +146,10 @@ namespace XU {
             UaNodeId(OpcUaId_Int16),// Data type of the argument
             -1,                     // ValueRank of the argument
             arrayDimensions,
-            UaLocalizedText("en", "")); // Description
-        // Argument setValid
-        pPropertyArg->setArgument(
-            1,                      // Index of the argument
-            "setValid",             // Name of the argument
-            UaNodeId(OpcUaId_Boolean),// Data type of the argument
-            -1,                     // ValueRank of the argument
-            arrayDimensions,
-            UaLocalizedText("en", "Valid")); // Description
+            UaLocalizedText("en", "If no status bit is set, status = VALID")); // Description
         // Argument setInvalid
         pPropertyArg->setArgument(
-            2,                      // Index of the argument
+            1,                      // Index of the argument
             "setInvalid",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -165,7 +157,7 @@ namespace XU {
             UaLocalizedText("en", "Invalid")); // Description
         // Argument setDoubt
         pPropertyArg->setArgument(
-            3,                      // Index of the argument
+            2,                      // Index of the argument
             "setDoubt",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -173,7 +165,7 @@ namespace XU {
             UaLocalizedText("en", "Doubtful")); // Description
         // Argument setHwFail
         pPropertyArg->setArgument(
-            4,                      // Index of the argument
+            3,                      // Index of the argument
             "setHwFail",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -181,7 +173,7 @@ namespace XU {
             UaLocalizedText("en", "HW failure")); // Description
         // Argument setRepval
         pPropertyArg->setArgument(
-            5,                      // Index of the argument
+            4,                      // Index of the argument
             "setRepval",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -189,7 +181,7 @@ namespace XU {
             UaLocalizedText("en", "Replacement value")); // Description
         // Argument setService
         pPropertyArg->setArgument(
-            6,                      // Index of the argument
+            5,                      // Index of the argument
             "setService",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -197,7 +189,7 @@ namespace XU {
             UaLocalizedText("en", "In service")); // Description
         // Argument setTimeAdj
         pPropertyArg->setArgument(
-            7,                      // Index of the argument
+            6,                      // Index of the argument
             "setTimeAdj",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -205,7 +197,7 @@ namespace XU {
             UaLocalizedText("en", "Time adjusted")); // Description
         // Argument setSimulat
         pPropertyArg->setArgument(
-            8,                      // Index of the argument
+            7,                      // Index of the argument
             "setSimulat",             // Name of the argument
             UaNodeId(OpcUaId_Boolean),// Data type of the argument
             -1,                     // ValueRank of the argument
@@ -266,7 +258,7 @@ namespace XU {
             pPropertyArg = new UaPropertyMethodArgument(
                 UaNodeId(XUId_IntPDUObjectType_writeSignal_InputArguments, nsTypeIdx),       // NodeId of the property
                 Ua_AccessLevel_CurrentRead,             // Access level of the property
-                9,                                      // Number of arguments
+                8,                                      // Number of arguments
                 UaPropertyMethodArgument::INARGUMENTS); // IN arguments
             // Argument newVal
             pPropertyArg->setArgument(
@@ -275,18 +267,10 @@ namespace XU {
                 UaNodeId(OpcUaId_Int16),// Data type of the argument
                 -1,                     // Array rank of the argument
                 arrayDimensions,
-                UaLocalizedText("en", "")); // Description
-            // Argument setValid
-            pPropertyArg->setArgument(
-                1,                      // Index of the argument
-                "setValid",             // Name of the argument
-                UaNodeId(OpcUaId_Boolean),// Data type of the argument
-                -1,                     // Array rank of the argument
-                arrayDimensions,
-                UaLocalizedText("en", "Valid")); // Description
+                UaLocalizedText("en", "If no status bit is set, status = VALID")); // Description
             // Argument setInvalid
             pPropertyArg->setArgument(
-                2,                      // Index of the argument
+                1,                      // Index of the argument
                 "setInvalid",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -294,7 +278,7 @@ namespace XU {
                 UaLocalizedText("en", "Invalid")); // Description
             // Argument setDoubt
             pPropertyArg->setArgument(
-                3,                      // Index of the argument
+                2,                      // Index of the argument
                 "setDoubt",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -302,7 +286,7 @@ namespace XU {
                 UaLocalizedText("en", "Doubtful")); // Description
             // Argument setHwFail
             pPropertyArg->setArgument(
-                4,                      // Index of the argument
+                3,                      // Index of the argument
                 "setHwFail",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -310,7 +294,7 @@ namespace XU {
                 UaLocalizedText("en", "HW failure")); // Description
             // Argument setRepval
             pPropertyArg->setArgument(
-                5,                      // Index of the argument
+                4,                      // Index of the argument
                 "setRepval",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -318,7 +302,7 @@ namespace XU {
                 UaLocalizedText("en", "Replacement value")); // Description
             // Argument setService
             pPropertyArg->setArgument(
-                6,                      // Index of the argument
+                5,                      // Index of the argument
                 "setService",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -326,7 +310,7 @@ namespace XU {
                 UaLocalizedText("en", "In service")); // Description
             // Argument setTimeAdj
             pPropertyArg->setArgument(
-                7,                      // Index of the argument
+                6,                      // Index of the argument
                 "setTimeAdj",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -334,7 +318,7 @@ namespace XU {
                 UaLocalizedText("en", "Time adjusted")); // Description
             // Argument setSimulat
             pPropertyArg->setArgument(
-                8,                      // Index of the argument
+                7,                      // Index of the argument
                 "setSimulat",             // Name of the argument
                 UaNodeId(OpcUaId_Boolean),// Data type of the argument
                 -1,                     // Array rank of the argument
@@ -421,17 +405,17 @@ namespace XU {
                 if (((m_pwriteSignalMethod != NULL) && (pMethod->nodeId() == m_pwriteSignalMethod->nodeId()))
                     || ((s_pwriteSignalMethod != NULL) && (pMethod->nodeId() == s_pwriteSignalMethod->nodeId())))
                 {
-                    if (inputArguments.length() < 9)
+                    if (inputArguments.length() < 8)
                     {
                         ret = OpcUa_BadArgumentsMissing;
                     }
-                    else if (inputArguments.length() > 9)
+                    else if (inputArguments.length() > 8)
                     {
                         ret = OpcUa_BadTooManyArguments;
                     }
                     else
                     {
-                        inputArgumentResults.create(9);
+                        inputArgumentResults.create(8);
 
                         UaVariant value;
                         UaStatus tmpRet;
@@ -442,57 +426,51 @@ namespace XU {
                         inputArgumentResults[0] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setValid;
+                        OpcUa_Boolean setInvalid;
                         value = inputArguments[1];
-                        tmpRet = value.toBool(setValid);
+                        tmpRet = value.toBool(setInvalid);
                         inputArgumentResults[1] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setInvalid;
+                        OpcUa_Boolean setDoubt;
                         value = inputArguments[2];
-                        tmpRet = value.toBool(setInvalid);
+                        tmpRet = value.toBool(setDoubt);
                         inputArgumentResults[2] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setDoubt;
+                        OpcUa_Boolean setHwFail;
                         value = inputArguments[3];
-                        tmpRet = value.toBool(setDoubt);
+                        tmpRet = value.toBool(setHwFail);
                         inputArgumentResults[3] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setHwFail;
+                        OpcUa_Boolean setRepval;
                         value = inputArguments[4];
-                        tmpRet = value.toBool(setHwFail);
+                        tmpRet = value.toBool(setRepval);
                         inputArgumentResults[4] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setRepval;
+                        OpcUa_Boolean setService;
                         value = inputArguments[5];
-                        tmpRet = value.toBool(setRepval);
+                        tmpRet = value.toBool(setService);
                         inputArgumentResults[5] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setService;
+                        OpcUa_Boolean setTimeAdj;
                         value = inputArguments[6];
-                        tmpRet = value.toBool(setService);
+                        tmpRet = value.toBool(setTimeAdj);
                         inputArgumentResults[6] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
-                        OpcUa_Boolean setTimeAdj;
-                        value = inputArguments[7];
-                        tmpRet = value.toBool(setTimeAdj);
-                        inputArgumentResults[7] = tmpRet.statusCode();
-                        if (tmpRet.isNotGood()) { ret = tmpRet; }
-
                         OpcUa_Boolean setSimulat;
-                        value = inputArguments[8];
+                        value = inputArguments[7];
                         tmpRet = value.toBool(setSimulat);
-                        inputArgumentResults[8] = tmpRet.statusCode();
+                        inputArgumentResults[7] = tmpRet.statusCode();
                         if (tmpRet.isNotGood()) { ret = tmpRet; }
 
                         if (ret.isGood())
                         {
-                            ret = this->writeSignal(serviceContext, newVal, setValid, setInvalid, setDoubt, setHwFail, setRepval, setService, setTimeAdj, setSimulat);
+                            ret = this->writeSignal(serviceContext, newVal, setInvalid, setDoubt, setHwFail, setRepval, setService, setTimeAdj, setSimulat);
                         }
                     }
 
@@ -520,7 +498,6 @@ namespace XU {
     UaStatus IntPDUObjectType::writeSignal(
         const ServiceContext&,
         OpcUa_Int16 newVal,
-        OpcUa_Boolean setValid,
         OpcUa_Boolean setInvalid,
         OpcUa_Boolean setDoubt,
         OpcUa_Boolean setHwFail,
@@ -529,8 +506,8 @@ namespace XU {
         OpcUa_Boolean setTimeAdj,
         OpcUa_Boolean setSimulat)
     {
-        UaStatus ret;
-        int temp_state = 1; // Set state "Uninitialized"
+        UaStatus ret = OpcUa_Good;
+        int temp_state = PDU::STATE::VALID; // set state valid
 
         // If signal has no write permission -> fail
         if (!getWritePermission())
@@ -539,8 +516,7 @@ namespace XU {
             return ret;
         }
 
-        if (setValid)
-            temp_state = PDU::STATE::VALID;
+        // if another bit is set, the valid flag is overwritten.
         if (setInvalid)
             temp_state |= PDU::STATE::INVALID;
         if (setRepval)
@@ -559,48 +535,19 @@ namespace XU {
 
 
         //! Limit the value to positive numbers
-        if (newVal >= 0)
-        {
-            //this->setValue(newVal);
-        }
-        //! Return Error Code -> Value out of Range
-        else
+        if (newVal != 1 && newVal != 0)
         {
             ret = OpcUa_BadEdited_OutOfRange;
             return ret;
         }
 
-        //! Check if State is possible
-        if (setValid)
-        {
-            if (setInvalid)
-            {
-                ret = OpcUa_BadInvalidState;
-                return ret;
-            }
-            else
-            {
-                this->setStateBitwise(temp_state);
-            }
-        }
-        else
-        {
-            if (setInvalid)
-            {
-                this->setStateBitwise(temp_state);
-            }
-            else
-            {
-                ret = OpcUa_BadInvalidState;
-                return ret;
-            }
-        }
 
-        //std::cerr << "ServerMode: " << NodeManagerXUNamespace::getServerMode() << std::endl;
-
+        //this->setStates(this, temp_state);
         //this->setValue(newVal);
-        std::cout << PDU::PDUObjecttoString<OpcUa_Int16>(*this, newVal, NodeManagerXUNamespace::getServerMode()) << '\n';
 
+        printf("%s\n", (PDU::PDUObjecttoString<OpcUa_Int16>(*this, newVal, temp_state)).c_str());
+        if (NodeManagerXUNamespace::getServerMode())
+            printf("!\n");
 
         return ret;
     }

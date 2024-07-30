@@ -15,7 +15,7 @@
 #include "xu_floatpduobjecttype.h"
 #include "xu_intpduobjecttype.h"
 #include <unordered_map>
-#include <vector>
+#include <unordered_set>
 #include <string>
 
 
@@ -67,7 +67,7 @@ namespace XU {
         bool m_signalimage_complete;
 
         XU::XUObjectType* xu_object_ref;
-        std::vector<std::string> m_pWrite_perm_list;
+        std::unordered_set<std::string> m_pWrite_perm_list;
 
 
 

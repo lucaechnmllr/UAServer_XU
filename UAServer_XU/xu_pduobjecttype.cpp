@@ -20,7 +20,6 @@
 namespace XU {
 
     bool PDUObjectType::s_typeNodesCreated = false;
-    bool PDUObjectType::s_write_perm_list_created = false;
     OpcUa::FolderType* PDUObjectType::s_pStates = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pTimestamp = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pStates_state_doubt = NULL;
@@ -31,7 +30,6 @@ namespace XU {
     OpcUa::PropertyType* PDUObjectType::s_pStates_state_simulat = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pStates_state_timeadj = NULL;
     OpcUa::PropertyType* PDUObjectType::s_pStates_state_uninit = NULL;
-    OpcUa::PropertyType* PDUObjectType::s_pStates_state_valid = NULL;
 
     /** Constructs an PDUObjectType object using an instance declaration node as base
     */
@@ -75,7 +73,6 @@ namespace XU {
         m_pStates_state_simulat = NULL;
         m_pStates_state_timeadj = NULL;
         m_pStates_state_uninit = NULL;
-        m_pStates_state_valid = NULL;
 
         std::list<UaBase::BaseNode*> lstReferencedNodes = pBaseNode->hierarchicallyReferencedNodes();
         for (std::list<UaBase::BaseNode*>::const_iterator it = lstReferencedNodes.begin(); it != lstReferencedNodes.end(); it++)
@@ -213,19 +210,6 @@ namespace XU {
                                 }
                             }
                         }
-                        if (!m_pStates_state_valid)
-                        {
-                            if (pChild2->browseName() == UaQualifiedName("state_valid", XU::NodeManagerXUNamespace::getTypeNamespace()))
-                            {
-                                m_pStates_state_valid = (OpcUa::PropertyType*)pFactory->createVariable((UaBase::Variable*)pChild2, pNodeConfig, pSharedMutex);
-                                addStatus = pNodeConfig->addNodeAndReference(m_pStates, m_pStates_state_valid, OpcUaId_HasProperty);
-                                UA_ASSERT(addStatus.isGood());
-                                if (!((UaBase::Object*)pChild2)->modellingRuleId().isNull())
-                                {
-                                    m_pStates_state_valid->setModellingRuleId(((UaBase::Object*)pChild2)->modellingRuleId());
-                                }
-                            }
-                        }
                     }
                 }
             }
@@ -240,7 +224,6 @@ namespace XU {
         UA_ASSERT(m_pStates_state_simulat);
         UA_ASSERT(m_pStates_state_timeadj);
         UA_ASSERT(m_pStates_state_uninit);
-        UA_ASSERT(m_pStates_state_valid);
     }
 
     /** Initialize the object with all member nodes
@@ -266,7 +249,7 @@ namespace XU {
         m_pStates_state_simulat = NULL;
         m_pStates_state_timeadj = NULL;
         m_pStates_state_uninit = NULL;
-        m_pStates_state_valid = NULL;
+
         // Object States
         m_pStates = new OpcUa::FolderType(UaNodeId(UaString("%1.States").arg(nodeId().toString()), nsIdx), s_pStates, m_pNodeConfig, m_pSharedMutex);
         addStatus = m_pNodeConfig->addNodeAndReference(this, m_pStates, OpcUaId_HasComponent);
@@ -334,14 +317,6 @@ namespace XU {
             m_pNodeConfig,
             m_pSharedMutex);
         addStatus = m_pNodeConfig->addNodeAndReference(m_pStates, m_pStates_state_uninit, OpcUaId_HasProperty);
-        UA_ASSERT(addStatus.isGood());
-        // Variable state_valid
-        m_pStates_state_valid = new OpcUa::PropertyType(
-            m_pStates,
-            s_pStates_state_valid,
-            m_pNodeConfig,
-            m_pSharedMutex);
-        addStatus = m_pNodeConfig->addNodeAndReference(m_pStates, m_pStates_state_valid, OpcUaId_HasProperty);
         UA_ASSERT(addStatus.isGood());
 
         // Mandatory variable Timestamp
@@ -475,14 +450,6 @@ namespace XU {
             addStatus = pTypeNodeConfig->addNodeAndReference(s_pStates, s_pStates_state_uninit, OpcUaId_HasProperty);
             UA_ASSERT(addStatus.isGood());
 
-            //  variable state_valid
-            defaultValue.setBool(OpcUa_False);
-            s_pStates_state_valid = new OpcUa::PropertyType(UaNodeId(XUId_PDUObjectType_States_state_valid, nsTypeIdx), "state_valid", XU::NodeManagerXUNamespace::getTypeNamespace(), defaultValue, 1, pTypeNodeConfig);
-            s_pStates_state_valid->setModellingRuleId(OpcUaId_ModellingRule_Mandatory);
-            s_pStates_state_valid->setValueRank(-1);
-
-            addStatus = pTypeNodeConfig->addNodeAndReference(s_pStates, s_pStates_state_valid, OpcUaId_HasProperty);
-            UA_ASSERT(addStatus.isGood());
 
         }
     }
@@ -503,7 +470,6 @@ namespace XU {
         s_pStates_state_simulat = NULL;
         s_pStates_state_timeadj = NULL;
         s_pStates_state_uninit = NULL;
-        s_pStates_state_valid = NULL;
     }
 
     /** Returns the type definition NodeId for the PDUObjectType
@@ -742,30 +708,6 @@ namespace XU {
         return ret;
     }
 
-    /**
-     *  Sets the state_valid value
-     */
-    void PDUObjectType::setStates_state_valid(OpcUa_Boolean state_valid)
-    {
-        UaVariant value;
-        value.setBool(state_valid);
-        UaDataValue dataValue;
-        dataValue.setValue(value, OpcUa_True, OpcUa_True);
-        m_pStates_state_valid->setValue(NULL, dataValue, OpcUa_False);
-    }
-
-    /**
-     *  Returns the value of state_valid
-     */
-    OpcUa_Boolean PDUObjectType::getStates_state_valid() const
-    {
-        UaVariant defaultValue;
-        OpcUa_Boolean ret = OpcUa_False;
-        UaDataValue dataValue(m_pStates_state_valid->value(NULL));
-        defaultValue = *dataValue.value();
-        defaultValue.toBool(ret);
-        return ret;
-    }
 
     /** Returns the States node.
      */
@@ -899,19 +841,7 @@ namespace XU {
     {
         return m_pStates_state_uninit;
     }
-    /** Returns the state_valid node.
-      */
-    OpcUa::PropertyType* PDUObjectType::getStates_state_validNode()
-    {
-        return m_pStates_state_valid;
-    }
 
-    /** Returns the state_valid node.
-      */
-    const OpcUa::PropertyType* PDUObjectType::getStates_state_validNode() const
-    {
-        return m_pStates_state_valid;
-    }
 
     /** Uses the NodeAccessInfo of pOther and its children. */
     void PDUObjectType::useAccessInfoFromInstance(PDUObjectType* pOther)
@@ -948,12 +878,6 @@ namespace XU {
 
     void PDUObjectType::setStates(XU::PDUObjectType* node, int state)
     {
-        if (state == PDU::STATE::VALID) {
-            node->setStates_state_valid(OpcUa_True);
-        }
-        else {
-            node->setStates_state_valid(OpcUa_False);
-        }
         if (state & PDU::STATE::UNINIT) {
             node->setStates_state_uninit(OpcUa_True);
             node->state_bitwise += PDU::STATE::UNINIT;
@@ -1020,7 +944,6 @@ namespace XU {
 
     void PDUObjectType::resetStates()
     {
-        this->setStates_state_valid(OpcUa_False);
         this->setStates_state_invalid(OpcUa_False);
         this->setStates_state_uninit(OpcUa_False);
         this->setStates_state_repval(OpcUa_False);

@@ -183,7 +183,7 @@ namespace XU {
 		{
 			while (std::getline(file, line))
 			{
-				m_pWrite_perm_list.push_back(line.c_str());
+				m_pWrite_perm_list.insert(line.c_str());
 			}
 
 			file.close();
@@ -250,7 +250,7 @@ namespace XU {
 	{
 		using std::string;
 
-		typedef std::shared_ptr<PDU::basePDU> pdu_ptr_t;
+		typedef std::unique_ptr<PDU::basePDU> pdu_ptr_t;
 		auto start_time = std::chrono::high_resolution_clock::now();
 
 		string line;
@@ -267,6 +267,8 @@ namespace XU {
 		{
 			// Error/abort handling
 			if (!std::getline(std::cin, line)) { // Get input stream
+				if (ShutDownFlag() != 0)
+					break;
 				// if failure, check the reason
 				if (std::cin.eof()) {
 					std::cerr << "End of input reached. Connection to STDINtoXU might be closed." << std::endl;
@@ -346,7 +348,7 @@ namespace XU {
 						}
 
 						bool temp_write_permission = false;
-						if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
+						if(m_pWrite_perm_list.find(temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
 						{
 							temp_write_permission = true;
 						}
@@ -387,12 +389,23 @@ namespace XU {
 
 						pObjectFloat->setTimestamp(UaDateTime::fromTime_t(static_cast<time_t>(temppdu->getTime().tv_sec + TIMEZONE_MESZ))); // Set new timestamp
 
-						//if (temppdu->getKKS() == "3AHP 712MP               XQ01     ")
-						//{
-							/*auto end_time = std::chrono::high_resolution_clock::now();
-							auto int_s = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
-							std::cerr << int_s.count() << "us" << std::endl;*/
-						//}
+						if (temppdu->getKKS() == "3AHP 712MP               XQ01     ")
+						{
+							auto end = std::chrono::high_resolution_clock::now();
+
+							auto now = std::chrono::system_clock::now();
+							std::time_t now_time = std::chrono::system_clock::to_time_t(now);
+							auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
+
+							// Zeit formatieren und ausgeben
+							std::tm* now_tm = std::localtime(&now_time);
+							std::ostringstream oss;
+							oss << std::put_time(now_tm, "%Y-%m-%d %H:%M:%S");
+							oss << '.' << std::setfill('0') << std::setw(3) << milliseconds.count();
+
+							// Ausgabe
+							std::cerr << oss.str() << " -> Signalaenderung veroeffentlicht (UAServer_XU)\n";
+						}
 					}
 					break;
 				}
@@ -430,7 +443,7 @@ namespace XU {
 						}
 
 						bool temp_write_permission = false;
-						if (std::find(m_pWrite_perm_list.begin(), m_pWrite_perm_list.end(), temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
+						if (m_pWrite_perm_list.find(temppdu->getKKS().c_str()) != m_pWrite_perm_list.end())
 						{
 							temp_write_permission = true;
 						}

@@ -75,7 +75,6 @@ namespace XU {
         UaStatus writeSignal(
             const ServiceContext& serviceContext,
             OpcUa_Int16 newVal,
-            OpcUa_Boolean setValid,
             OpcUa_Boolean setInvalid,
             OpcUa_Boolean setDoubt,
             OpcUa_Boolean setHwFail,
